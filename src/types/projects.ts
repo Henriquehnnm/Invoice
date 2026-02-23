@@ -1,0 +1,1 @@
+export type chargeType = "fixed" | "perHour"
