@@ -1,3 +1,15 @@
-export function creator() {
-    // TODO: Importar aqui o readUserForCreate() e usar suas informacoes para criar o projeto e salvalo no DB
+import { readUserForCreate } from "../../cli/readUser"
+import { initDB, saveProject } from "../../data/database.ts";
+
+export async function creator() {
+   const data = await readUserForCreate()
+
+    // Database
+    initDB()
+
+    saveProject(data)
+
 }
+
+// Dev test
+await creator()

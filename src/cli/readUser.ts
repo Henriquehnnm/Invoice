@@ -2,7 +2,7 @@ import * as p from '@clack/prompts'
 import pc from 'picocolors'
 import {z} from 'zod'
 
-async function readUserForCreate() {
+export async function readUserForCreate() {
     // Get infos
     const today = new Date().toISOString().split('T')[0]
     const parseDeadline = (input: string): string | null => {
@@ -172,4 +172,4 @@ async function readUserForCreate() {
 }
 
 // Dev test
-await readUserForCreate()
+// await readUserForCreate()

@@ -1,6 +1,6 @@
 import { Database } from "bun:sqlite"
-import { Projects } from "../classes/project"
 
+// Resolver path
 const db = new Database("data/projects.sqlite", { create: true })
 
 /**
@@ -16,38 +16,50 @@ export const initDB = () => {
             name TEXT NOT NULL,
             description TEXT,
             charge_type TEXT,
-            type TEXT,
-            technologies TEXT,
+            
             client_name TEXT,
             client_email TEXT,
-            client_enterprise INTEGER DEFAULT 0,
-            project_budget REAL,
-            project_started INTEGER,
-            project_finished INTEGER,
-            paid INTEGER,
+            client_company TEXT,
+            
             start_date TEXT,
-            delivery_date TEXT,
-            pay_date TEXT,
-            value REAL,
-            paid_amount REAL,
-            amount_needed REAL,
-            monthly_total REAL
+            delivery_forecast TEXT,
+            
+            budget REAL,
+            contact_budget REAL,
+            initial_pay REAL,
+            expected_pay_date TEXT,
+            
+            project_started INTEGER DEFAULT 0,
+            
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     `)
 }
 
-export const saveProject = (project: Projects) => {
+export const saveProject = (project: {
+    budget: number;
+    projectStarted: Exclude<Awaited<boolean | symbol>, symbol>;
+    deliveryForecast: string;
+    startDate: Exclude<Awaited<string | symbol>, symbol>;
+    clientEmail: Exclude<Awaited<string | symbol>, symbol>;
+    clientName: Exclude<Awaited<string | symbol>, symbol>;
+    contactBudget: number;
+    chargeType: Exclude<Awaited<symbol | string>, symbol>;
+    description: Exclude<Awaited<string | symbol>, symbol>;
+    isInitialPay: number;
+    expectedPayDate: string;
+    clientCompany: Exclude<Awaited<string | symbol>, symbol>;
+    name: Exclude<Awaited<string | symbol>, symbol>
+}) => {
     const query = db.prepare(`
-        INTERT INTO projects (
-            name, description, charge_type, type, technologies, client_name, client_email, 
-            client_enterprise, project_budget, project_started, 
-            project_finished, paid, start_date, delivery_date, 
-            pay_date, value, paid_amount, amount_needed, monthly_total
+        INSERT INTO projects (
+            name, description, charge_type, client_name, client_email,
+            client_company, start_date, delivery_forecast, budget, contact_budget,
+            initial_pay, expected_pay_date, project_started
         ) VALUES (
             $name, $description, $chargeType, $clientName, $clientEmail,
-            $clientEnterprise, $projectBudget, $projectStarted,
-            $projectFinished, $paid, $startDate, $deliveryDate,
-            $payDate, $value, $paidAmount, $amountNeeded, $monthlyTotal
+            $clientCompany, $startDate, $deliveryForecast, $budget, $contactBudget,
+            $isInitialPay, $expectedPayDate, $projectStarted
         )
     `)
 
@@ -55,22 +67,16 @@ export const saveProject = (project: Projects) => {
         $name: project.name,
         $description: project.description,
         $chargeType: project.chargeType,
-        $type: project.type,
-        $technologies: project.technologies,
         $clientName: project.clientName,
         $clientEmail: project.clientEmail,
-        $clientEnterprise: project.clientEnterprise,
-        $projectBudget: project.projectBudget,
-        $projectStarted: project.projectStarted ? 1 : 0,
-        $projectFinished: project.projectFinished ? 1 : 0,
-        $paid: project.paid ? 1 : 0,
+        $clientCompany: project.clientCompany,
         $startDate: project.startDate,
-        $deliveryDate: project.deliveryDate,
-        $payDate: project.payDate,
-        $value: project.value,
-        $paidAmount: project.paidAmount,
-        $amountNeeded: project.amountNeeded,
-        $monthlyTotal: project.monthlyTotal,
+        $deliveryForecast: project.deliveryForecast,
+        $budget: project.budget,
+        $contactBudget: project.contactBudget,
+        $isInitialPay: project.isInitialPay,
+        $expectedPayDate: project.expectedPayDate,
+        $projectStarted: project.projectStarted ? 1 : 0,
     })
 }
 
