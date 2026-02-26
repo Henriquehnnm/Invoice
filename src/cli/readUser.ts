@@ -94,6 +94,17 @@ export async function readUserForCreate() {
                 }
             }),
 
+            //             .--.
+            //            |o_o |
+            //            |:_/ |
+            //           //   \ \
+            //          (|     | )
+            //         /'\_   _/`\
+            //         \___)=(___/
+            //
+            //         Congratulations, you found Tux ASCII
+            //         lost in the middle of the file!
+
             deliveryForecast: () => p.text({
                 message: 'Delivery forecast:',
                 placeholder: 'Use 20d (after today) ou YYYY-MM-DD',
