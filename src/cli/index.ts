@@ -2,8 +2,9 @@ import { Command } from "commander"
 import { creator } from "../utils/writers/creator"
 import { readAll } from "../utils/readers/readAll"
 import { getProjectById, getProjectByName } from "../utils/readers/finder"
-import {readUserForUpdateCompleted} from "./readUser.ts";
-import {updaterCompleted} from "../utils/writers/editor.ts"
+import {readUserForUpdateCompleted, readUserForStart} from "./readUser.ts";
+import {updaterCompleted, updaterStarted} from "../utils/writers/editor.ts"
+import type {Project} from "../types/projects.ts";
 
 export function cli(): void {
     const program = new Command()
@@ -16,27 +17,27 @@ export function cli(): void {
     program
         .command("new")
         .description("Create new project")
-        .action(async () => {
+        .action(async (): Promise<void> => {
             await creator()
         })
 
     program
         .command("list")
         .description("List all projects")
-        .action(async () => {
+        .action(async (): Promise<void> => {
             await readAll()
         })
 
     program
         .command("get")
-        .description("Get a especific project")
+        .description("Get a specific project")
         .option("-i --id <number>", "Search the project by ID")
         .option("-n --name <name>", "Get project by name")
-        .action(async (options) => {
+        .action(async (options): Promise<void> => {
 
             // By name
             if (options.name) {
-                const project = await getProjectByName(options.name)
+                const project: Project | null | undefined = await getProjectByName(options.name)
 
                 if (project) {
                     console.table(project)
@@ -47,7 +48,7 @@ export function cli(): void {
 
             // By id
             if (options.id) {
-                const project = await getProjectById(Number(options.id))
+                const project: Project | null | undefined = await getProjectById(Number(options.id))
 
                 if (project) {
                     console.table(project)
@@ -58,20 +59,37 @@ export function cli(): void {
         })
 
     program
-        .command("update")
+        .command("done")
         .description("Update the project by ID")
         .option("-i --id <number>", "Get project by ID")
-        .action(async (option) => {
-            const projectId = Number(option.id)
-            const project = await getProjectById(projectId)
+        .action(async (option): Promise<void> => {
+            const projectId: number = Number(option.id)
+            const project: Project | null | undefined = await getProjectById(projectId)
             if (project) {
-                const currenStatus = !!project?.projectCompleted
-                const newState = await readUserForUpdateCompleted(currenStatus)
-                updaterCompleted(option.id, newState)
+                const currenStatus: boolean = !!project?.projectCompleted
+                const newState: boolean = await readUserForUpdateCompleted(currenStatus)
+                updaterCompleted(projectId, newState)
             } else {
                 console.error("Project not found")
             }
 
+        })
+
+    program
+        .command("start")
+        .description("Start project")
+        .option("-i --id <number>", "Get project by ID")
+        .action(async (options): Promise<void> => {
+            const projectID: number = Number(options.id)
+            const project: Project | null | undefined = await getProjectById(projectID)
+            if (project) {
+                const currenStatus: boolean = !!project?.projectStarted
+                console.log(currenStatus)
+                const newState: boolean = await readUserForStart(currenStatus)
+                updaterStarted(projectID, newState)
+            } else {
+                console.error("Project not found")
+            }
         })
 
 

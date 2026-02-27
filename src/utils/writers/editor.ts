@@ -12,3 +12,16 @@ export function updaterCompleted(id: number, completed: boolean): void {
         $completed: completed ? 1 : 0
     })
 }
+
+export function updaterStarted(id: number, started: boolean): void {
+    const query = db.prepare(`
+        UPDATE projects
+        set projectStarted = $started
+        WHERE id = $id
+    `)
+
+    query.run({
+        $id: id,
+        $started: started ? 1 : 0
+    })
+}

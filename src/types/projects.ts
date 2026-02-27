@@ -5,23 +5,23 @@ export interface Project {
     id: number
     name: string
     description?: string
-    charge_type?: chargeType
+    chargeType?: chargeType
 
-    client_name?: string;
-    client_email?: string;
-    client_company?: string;
+    clientName?: string;
+    clientEmail?: string;
+    clientCompany?: string;
 
     start_date?: string;
-    delivery_forecast?: string;
+    deliveryForecast?: string;
 
     budget?: number;
-    contact_budget?: number;
-    initial_pay?: number;
-    expected_pay_date?: string;
+    contactBudget?: number;
+    initialPay?: number;
+    expectedPayDate?: string;
 
-    project_started: numBol;
+    projectStarted: numBol;
     projectCompleted: numBol;
-    created_at: string;
+    createdAt: string;
 }
 
 export interface saveProjectInterface {

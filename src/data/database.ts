@@ -1,6 +1,6 @@
 import { Database } from "bun:sqlite"
 import { join } from "node:path"
-import type { saveProjectInterface } from "../types/projects.ts";
+import type {saveProjectInterface} from "../types/projects.ts";
 
 // Resolver path
 const DB_PATH = join(process.cwd(), "data", "database.sqlite");

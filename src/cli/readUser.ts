@@ -29,6 +29,12 @@ export async function readUserForCreate() {
         return date.toISOString().split('T')[0]
     }
 
+
+
+   /**
+    * # Main Inputs
+    * */
+
    // Start User Interface
     p.intro(pc.cyan('INVOICE CLI - New Project'))
 
@@ -108,6 +114,7 @@ export async function readUserForCreate() {
             deliveryForecast: () => p.text({
                 message: 'Delivery forecast:',
                 placeholder: 'Use 20d (after today) ou YYYY-MM-DD',
+                defaultValue: 'Not informed',
                 validate: value => {
                     const input = (value ?? '').trim()
                     if (!input) return
@@ -155,6 +162,7 @@ export async function readUserForCreate() {
             expectedPayDate: () => p.text({
                 message: 'Pay date forecast:',
                 placeholder: '20d (after today) or YYYY-MM-DD',
+                defaultValue: 'Not informed',
                 validate: value => {
                     const input = (value ?? '').trim()
                     if (!input) return
@@ -179,6 +187,7 @@ export async function readUserForCreate() {
     return {
         ...projectData,
         deliveryForecast: parseDeadline(projectData.deliveryForecast) || projectData.deliveryForecast,
+        projectCompleted: false,
         expectedPayDate: parseDeadline(projectData.expectedPayDate) || projectData.expectedPayDate,
         budget: Number(projectData.budget),
         contactBudget: Number(projectData.contactBudget),
@@ -186,6 +195,8 @@ export async function readUserForCreate() {
     }
 }
 
+
+// Readuser for update
 export async function readUserForUpdateCompleted(currentStatus: boolean): Promise<boolean> {
     p.intro(pc.cyan('INVOICE CLI - Complete project'))
 
@@ -207,5 +218,22 @@ export async function readUserForUpdateCompleted(currentStatus: boolean): Promis
     }
 }
 
-// Dev test
-//  console.log(await readUserForUpdateCompleted(true))
+
+/**
+ * # Start existent project
+ * */
+export async function readUserForStart(currentStatus: boolean): Promise<boolean> {
+    p.intro(pc.cyan('INVOICE CLI - Start project'))
+
+    const toggleStarted: boolean | symbol = await p.confirm({
+        message: `Project is currently ${currentStatus ? 'started. Toggle Status?' : 'not started. Start project?'}`,
+        initialValue: !currentStatus,
+    })
+
+    if (p.isCancel(toggleStarted)) {
+        p.cancel('Operation canceled')
+        process.exit(0)
+    }
+
+    return toggleStarted ? !currentStatus : currentStatus
+}
