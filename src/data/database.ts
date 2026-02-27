@@ -18,17 +18,17 @@ export const initDB = () => {
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
             description TEXT,
-            chargeType TEXT,
+            chargeType TEXT NOT NULL,
             
-            clientName TEXT,
-            clientEmail TEXT,
+            clientName TEXT NOT NULL,
+            clientEmail TEXT NOT NULL,
             clientCompany TEXT,
             
-            startDate TEXT,
+            startDate TEXT NOT NULL,
             deliveryForecast TEXT,
             
-            budget REAL,
-            contactBudget REAL,
+            budget REAL NOT NULL,
+            contactBudget REAL NOT NULL,
             initialPay REAL,
             expectedPayDate TEXT,
             

@@ -31,13 +31,15 @@ export async function readUserForCreate() {
 
 
 
-   /**
-    * # Main Inputs
-    * */
+
 
    // Start User Interface
     p.intro(pc.cyan('INVOICE CLI - New Project'))
 
+
+    /**
+     * # Main Inputs
+     * */
     // Inputs
     const projectData = await p.group(
         {
@@ -113,7 +115,7 @@ export async function readUserForCreate() {
 
             deliveryForecast: () => p.text({
                 message: 'Delivery forecast:',
-                placeholder: 'Use 20d (after today) ou YYYY-MM-DD',
+                placeholder: 'Use 20d (after today) or YYYY-MM-DD',
                 defaultValue: 'Not informed',
                 validate: value => {
                     const input = (value ?? '').trim()
@@ -211,11 +213,12 @@ export async function readUserForUpdateCompleted(currentStatus: boolean): Promis
     }
 
     // if/else CLASSICO pra evirar erro
-    if (toggleCompleted) {
-        return !currentStatus
-    } else {
-        return currentStatus
-    }
+    // if (toggleCompleted) {
+    //     return !currentStatus
+    // } else {
+    //     return currentStatus
+    // }
+    return toggleCompleted ? !currentStatus : currentStatus
 }
 
 

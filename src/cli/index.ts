@@ -5,6 +5,7 @@ import { getProjectById, getProjectByName } from "../utils/readers/finder"
 import {readUserForUpdateCompleted, readUserForStart} from "./readUser.ts";
 import {updaterCompleted, updaterStarted} from "../utils/writers/editor.ts"
 import type {Project} from "../types/projects.ts";
+import {getProjectsByCompleted, getProjectsByStarted} from "../utils/readers/filter.ts";
 
 export function cli(): void {
     const program = new Command()
@@ -59,8 +60,25 @@ export function cli(): void {
         })
 
     program
+        .command("start")
+        .description("Start existent project")
+        .option("-i --id <number>", "Get project by ID")
+        .action(async (options): Promise<void> => {
+            const projectID: number = Number(options.id)
+            const project: Project | null | undefined = await getProjectById(projectID)
+            if (project) {
+                const currenStatus: boolean = !!project?.projectStarted
+                console.log(currenStatus)
+                const newState: boolean = await readUserForStart(currenStatus)
+                updaterStarted(projectID, newState)
+            } else {
+                console.error("Project not found")
+            }
+        })
+
+    program
         .command("done")
-        .description("Update the project by ID")
+        .description("Complete existent project")
         .option("-i --id <number>", "Get project by ID")
         .action(async (option): Promise<void> => {
             const projectId: number = Number(option.id)
@@ -75,20 +93,19 @@ export function cli(): void {
 
         })
 
+
     program
-        .command("start")
-        .description("Start project")
-        .option("-i --id <number>", "Get project by ID")
+        .command("filter")
+        .description("Filter projects by condition")
+        .option("-s --started", "Filter started projects")
+        .option("-c --completed", "Filter completed projects")
         .action(async (options): Promise<void> => {
-            const projectID: number = Number(options.id)
-            const project: Project | null | undefined = await getProjectById(projectID)
-            if (project) {
-                const currenStatus: boolean = !!project?.projectStarted
-                console.log(currenStatus)
-                const newState: boolean = await readUserForStart(currenStatus)
-                updaterStarted(projectID, newState)
-            } else {
-                console.error("Project not found")
+            if (options.started) {
+                console.table(getProjectsByStarted(), ["id", "name", "description"])
+            }
+
+            if (options.completed) {
+                console.table(getProjectsByCompleted(), ["id", "name", "description"])
             }
         })
 
