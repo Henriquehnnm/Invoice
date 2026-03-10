@@ -10,6 +10,8 @@ import {
   getProjectsByCompleted,
   getProjectsByStarted,
 } from "../utils/readers/filters.ts";
+import { exportCSVById, exportAllCSV } from "../utils/exporters/csv.ts";
+import pc from "picocolors";
 
 export function cli(): void {
   const program = new Command();
@@ -126,6 +128,25 @@ export function cli(): void {
       if (options.id) {
         const projectID = Number(options.id);
         await deleteProject(projectID);
+      }
+    });
+
+  program
+    .command("export")
+    .description("Export project to CSV")
+    .option("-a, --all", "Export all projects")
+    .option("-i, --id <number>", "Export project by id")
+    .argument("[path]", "File path output (default is output.csv", "output.csv")
+    .action(async (path, options): Promise<void> => {
+      if (options.id) {
+        const projectId = Number(options.id);
+        await exportCSVById(projectId, path);
+        console.log(pc.green(`Project ${projectId} exported to ${path}`));
+      }
+
+      if (options.all) {
+        await exportAllCSV(path);
+        console.log(pc.green(`All projects were exported to ${path}`));
       }
     });
 
