@@ -2,7 +2,11 @@ import { Command } from "commander";
 import { creator } from "../utils/writers/creator";
 import { readAll } from "../utils/readers/readAll";
 import { getProjectById, getProjectByName } from "../utils/readers/finder";
-import { readUserForUpdateCompleted, readUserForStart } from "./readUser.ts";
+import {
+  readUserForInit,
+  readUserForUpdateCompleted,
+  readUserForStart,
+} from "./readUser.ts";
 import { updaterCompleted, updaterStarted } from "../utils/writers/editor.ts";
 import type { Project } from "../types/projects.ts";
 import { deleteProject } from "../utils/writers/deleter.ts";
@@ -11,6 +15,7 @@ import {
   getProjectsByStarted,
 } from "../utils/readers/filters.ts";
 import { exportCSVById, exportAllCSV } from "../utils/exporters/csv.ts";
+import { setup } from "../utils/writers/setup.ts";
 import pc from "picocolors";
 
 export function cli(): void {
@@ -20,6 +25,18 @@ export function cli(): void {
     .name("Invoice")
     .description("Manage your freelance projects elegantly")
     .version("0.0.0");
+
+  program
+    .command("setup")
+    .description("Start Invoice configuration")
+    .action(async (): Promise<void> => {
+      const result = await setup();
+      if (result) {
+        console.log(pc.green("Logged in successfully! :)"));
+      } else {
+        console.log(pc.red("Operation aborted. :("));
+      }
+    });
 
   program
     .command("new")

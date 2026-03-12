@@ -7,7 +7,6 @@ export async function readAll() {
     console.table(projects, [
       "id",
       "name",
-      "description",
       "projectStarted",
       "projectCompleted",
     ]);

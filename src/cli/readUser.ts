@@ -2,6 +2,43 @@ import * as p from "@clack/prompts";
 import pc from "picocolors";
 import { z } from "zod";
 
+export async function readUserForInit() {
+  p.intro(pc.cyan("INVOICE CLI - Setup"));
+
+  const data = await p.group(
+    {
+      name: () =>
+        p.text({
+          message: "Enter your name:",
+          placeholder: "Ex: Assim e Assim",
+          validate: (value) => {
+            if (!value) return "The name is mandatory!";
+          },
+        }),
+
+      email: () =>
+        p.text({
+          message: "Enter your email:",
+          placeholder: "Ex: hello.world@example.com",
+          validate: (value) => {
+            const result = z.email().safeParse(value);
+            if (!result.success) {
+              return "The email is invalid or empty!";
+            }
+          },
+        }),
+    },
+    {
+      onCancel: () => {
+        p.cancel("Operation canceled!");
+        process.exit(0);
+      },
+    },
+  );
+
+  return data;
+}
+
 export async function readUserForCreate() {
   // Get infos
   const today = new Date().toISOString().split("T")[0];
