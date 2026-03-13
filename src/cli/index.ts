@@ -44,8 +44,35 @@ export function cli(): void {
   program
     .command("list")
     .description("List all projects")
-    .action(async (): Promise<void> => {
-      await readAll();
+    .option("-j, --json", "Return json output")
+    .action(async (option): Promise<void> => {
+      const projects = await readAll();
+
+      if (projects) {
+        if (option.json) {
+          console.log(projects);
+        } else {
+          const Table = require("cli-table3");
+          const table = new Table({
+            head: ["id", "name", "started", "completed"],
+            style: {
+              head: [],
+              border: ["white"],
+            },
+          });
+          projects?.forEach((p) => {
+            table.push([
+              pc.yellow(p.id),
+              p.name,
+              pc.yellow(p.projectStarted),
+              pc.yellow(p.projectCompleted),
+            ]);
+          });
+          console.log(table.toString());
+        }
+      } else {
+        console.error("No projects found!");
+      }
     });
 
   program
@@ -53,6 +80,7 @@ export function cli(): void {
     .description("Get a specific project")
     .option("-i --id <number>", "Search the project by ID")
     .option("-n --name <name>", "Get project by name")
+    .option("-j, --json", "Return json output")
     .action(async (options): Promise<void> => {
       // By name
       if (options.name) {
@@ -61,7 +89,11 @@ export function cli(): void {
         );
 
         if (project) {
-          console.table(project);
+          if (options.json) {
+            console.log(project);
+          } else {
+            console.table(project);
+          }
         } else {
           console.error("Project not found");
         }
@@ -74,7 +106,11 @@ export function cli(): void {
         );
 
         if (project) {
-          console.table(project);
+          if (options.json) {
+            console.log(project);
+          } else {
+            console.table(project);
+          }
         } else {
           console.error("Project not found");
         }
@@ -134,6 +170,7 @@ export function cli(): void {
     .description("Filter projects by condition")
     .option("-s --started", "Filter started projects")
     .option("-c --completed", "Filter completed projects")
+    .option("-j, --json", "Return json output")
     .action(async (options): Promise<void> => {
       const Table = require("cli-table3");
       const table = new Table({
@@ -147,10 +184,14 @@ export function cli(): void {
       if (options.started) {
         const projects = getProjectsByStarted();
         if (projects!.length > 0) {
-          projects?.forEach((p) => {
-            table.push([pc.yellow(p.id), p.name, p.description]);
-          });
-          console.log(table.toString());
+          if (options.json) {
+            console.log(projects);
+          } else {
+            projects?.forEach((p) => {
+              table.push([pc.yellow(p.id), p.name, p.description]);
+            });
+            console.log(table.toString());
+          }
         } else {
           console.error("No projects found!");
         }
@@ -159,10 +200,14 @@ export function cli(): void {
       if (options.completed) {
         const projects = getProjectsByCompleted();
         if (projects!.length > 0) {
-          projects?.forEach((p) => {
-            table.push([pc.yellow(p.id), p.name, p.description]);
-          });
-          console.log(table.toString());
+          if (options.json) {
+            console.log(projects);
+          } else {
+            projects?.forEach((p) => {
+              table.push([pc.yellow(p.id), p.name, p.description]);
+            });
+            console.log(table.toString());
+          }
         } else {
           console.error("No projects found!");
         }

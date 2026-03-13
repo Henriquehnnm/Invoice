@@ -7,23 +7,24 @@ export async function readAll() {
 
   const projects = await data();
   if (projects.length != 0) {
-    const table = new Table({
-      head: ["id", "name", "started", "completed"],
-      style: {
-        head: [],
-        border: ["white"],
-      },
-    });
-    projects.forEach((p) => {
-      table.push([
-        pc.yellow(p.id),
-        p.name,
-        pc.yellow(p.projectStarted),
-        pc.yellow(p.projectCompleted),
-      ]);
-    });
-    console.log(table.toString());
+    // const table = new Table({
+    //   head: ["id", "name", "started", "completed"],
+    //   style: {
+    //     head: [],
+    //     border: ["white"],
+    //   },
+    // });
+    // projects.forEach((p) => {
+    //   table.push([
+    //     pc.yellow(p.id),
+    //     p.name,
+    //     pc.yellow(p.projectStarted),
+    //     pc.yellow(p.projectCompleted),
+    //   ]);
+    // });
+    // console.log(table.toString());
+    return projects;
   } else {
-    console.error("No projects found.");
+    return null;
   }
 }
