@@ -1,4 +1,4 @@
-import db from "../../data/database";
+import db from "./database";
 
 export function updaterCompleted(id: number, completed: boolean): void {
   const query = db.prepare(`

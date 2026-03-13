@@ -1,7 +1,6 @@
 import { readUserForInit, genericConfirm } from "../../cli/readUser";
 import { homedir } from "os";
 
-// TODO - Verificar se o arquivo ja existe, se sim, perguntar se quer reescrever
 export const setup = async (): Promise<boolean> => {
   const configPath = `${homedir()}/.invoicerc`;
   const file = Bun.file(configPath);

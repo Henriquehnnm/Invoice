@@ -2,12 +2,8 @@ import { Command } from "commander";
 import { creator } from "../utils/writers/creator";
 import { readAll } from "../utils/readers/readAll";
 import { getProjectById, getProjectByName } from "../utils/readers/finder";
-import {
-  readUserForInit,
-  readUserForUpdateCompleted,
-  readUserForStart,
-} from "./readUser.ts";
-import { updaterCompleted, updaterStarted } from "../utils/writers/editor.ts";
+import { readUserForUpdateCompleted, readUserForStart } from "./readUser.ts";
+import { updaterCompleted, updaterStarted } from "../data/editor.ts";
 import type { Project } from "../types/projects.ts";
 import { deleteProject } from "../utils/writers/deleter.ts";
 import {
@@ -24,7 +20,7 @@ export function cli(): void {
   program
     .name("Invoice")
     .description("Manage your freelance projects elegantly")
-    .version("0.0.0");
+    .version("1.0.0");
 
   program
     .command("setup")
@@ -133,19 +129,43 @@ export function cli(): void {
       }
     });
 
-  // TODO: Usar cli table3 aqui tbm
   program
     .command("filter")
     .description("Filter projects by condition")
     .option("-s --started", "Filter started projects")
     .option("-c --completed", "Filter completed projects")
     .action(async (options): Promise<void> => {
+      const Table = require("cli-table3");
+      const table = new Table({
+        head: ["id", "name", "description"],
+        style: {
+          head: [],
+          border: ["white"],
+        },
+      });
+
       if (options.started) {
-        console.table(getProjectsByStarted(), ["id", "name", "description"]);
+        const projects = getProjectsByStarted();
+        if (projects!.length > 0) {
+          projects?.forEach((p) => {
+            table.push([pc.yellow(p.id), p.name, p.description]);
+          });
+          console.log(table.toString());
+        } else {
+          console.error("No projects found!");
+        }
       }
 
       if (options.completed) {
-        console.table(getProjectsByCompleted(), ["id", "name", "description"]);
+        const projects = getProjectsByCompleted();
+        if (projects!.length > 0) {
+          projects?.forEach((p) => {
+            table.push([pc.yellow(p.id), p.name, p.description]);
+          });
+          console.log(table.toString());
+        } else {
+          console.error("No projects found!");
+        }
       }
 
       if (Object.keys(options).length === 0) {

@@ -1,7 +1,9 @@
 import { cli } from "./cli";
+import { initDB } from "./data/database";
 
 function main() {
-    cli()
+  initDB();
+  cli();
 }
 
 main();

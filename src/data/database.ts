@@ -1,9 +1,17 @@
 import { Database } from "bun:sqlite";
 import { join } from "node:path";
+import { homedir } from "os";
+import fs from "fs";
 import type { saveProjectInterface } from "../types/projects.ts";
 
 // Resolver path
-const DB_PATH = join(process.cwd(), "data", "database.sqlite");
+const DB_DIR = join(homedir(), ".local", "share", "invoice", "db");
+
+const DB_PATH = join(DB_DIR, "projects.sqlite");
+
+if (!fs.existsSync(DB_DIR)) {
+  fs.mkdirSync(DB_DIR, { recursive: true });
+}
 const db = new Database(DB_PATH, { create: true });
 
 /**
