@@ -50,7 +50,7 @@ export function cli(): void {
 
       if (projects) {
         if (option.json) {
-          console.log(projects);
+          console.log(JSON.stringify(projects, null, 2));
         } else {
           const Table = require("cli-table3");
           const table = new Table({
@@ -90,7 +90,7 @@ export function cli(): void {
 
         if (project) {
           if (options.json) {
-            console.log(project);
+            console.log(JSON.stringify(project, null, 2));
           } else {
             console.table(project);
           }
@@ -107,7 +107,7 @@ export function cli(): void {
 
         if (project) {
           if (options.json) {
-            console.log(project);
+            console.log(JSON.stringify(project, null, 2));
           } else {
             console.table(project);
           }
@@ -185,7 +185,7 @@ export function cli(): void {
         const projects = getProjectsByStarted();
         if (projects!.length > 0) {
           if (options.json) {
-            console.log(projects);
+            console.log(JSON.stringify(projects, null, 2));
           } else {
             projects?.forEach((p) => {
               table.push([pc.yellow(p.id), p.name, p.description]);
@@ -201,7 +201,7 @@ export function cli(): void {
         const projects = getProjectsByCompleted();
         if (projects!.length > 0) {
           if (options.json) {
-            console.log(projects);
+            console.log(JSON.stringify(projects, null, 2));
           } else {
             projects?.forEach((p) => {
               table.push([pc.yellow(p.id), p.name, p.description]);
