@@ -38,7 +38,7 @@ export async function exportCSVById(id: number, path: string) {
         "clientName",
         "clientEmail",
         "clientCompany",
-        "start_date",
+        "startDate",
         "deliveryForecast",
         "budget",
         "contactBudget",

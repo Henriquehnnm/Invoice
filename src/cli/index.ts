@@ -19,6 +19,7 @@ import { setup } from "../utils/writers/setup.ts";
 import { updateProject } from "../data/editor.ts";
 import pc from "picocolors";
 import { outro } from "@clack/prompts";
+import { generatePDF } from "../utils/exporters/pdf.ts";
 
 export function cli(): void {
   const program = new Command();
@@ -175,6 +176,11 @@ export function cli(): void {
     .description("Edit project information by id")
     .option("-i --id <number>", "Get project by ID")
     .action(async (option) => {
+      if (Object.keys(option).length === 0) {
+        console.warn(pc.yellow("Please provide either --id <number> flag."));
+        process.exit(1);
+      }
+
       try {
         const projectId: number = Number(option.id);
         const newData = await readUserForEdit();
@@ -258,11 +264,36 @@ export function cli(): void {
     });
 
   program
+    .command("generate")
+    .description("Generates an invoice for a project")
+    .option("-i, --id <number>", "Export project by id")
+    .argument(
+      "[path]",
+      "File path output (default is invoice.pdf)",
+      "invoice.pdf",
+    )
+    .action(async (path, options): Promise<void> => {
+      if (options.id) {
+        const projectId = Number(options.id);
+        await generatePDF(projectId, path);
+        console.log(pc.green(`Project ${projectId} exported to ${path}`));
+      }
+
+      if (!options.id) {
+        console.warn(pc.yellow("Please provide either --id <number> flag."));
+      }
+    });
+
+  program
     .command("export")
     .description("Export project to CSV")
     .option("-a, --all", "Export all projects")
     .option("-i, --id <number>", "Export project by id")
-    .argument("[path]", "File path output (default is output.csv", "output.csv")
+    .argument(
+      "[path]",
+      "File path output (default is output.csv)",
+      "output.csv",
+    )
     .action(async (path, options): Promise<void> => {
       if (options.id) {
         const projectId = Number(options.id);

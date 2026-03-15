@@ -11,7 +11,7 @@ export interface Project {
   clientEmail?: string;
   clientCompany?: string;
 
-  start_date?: string;
+  startDate?: string;
   deliveryForecast?: string;
 
   budget?: number;
