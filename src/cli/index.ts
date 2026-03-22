@@ -25,9 +25,9 @@ export function cli(): void {
   const program = new Command();
 
   program
-    .name("Invoice")
+    .name("invoice")
     .description("Manage your freelance projects elegantly")
-    .version("1.0.1");
+    .version("1.0.2");
 
   program
     .command("setup")
